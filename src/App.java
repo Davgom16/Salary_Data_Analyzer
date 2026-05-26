@@ -1,21 +1,24 @@
 import java.util.Scanner;
-import java.io.FileReader;
+import java.util.List;
 
 public class App {
-    public static void main(String[] args) throws Exception {
+
+    public static boolean isNumeric(String data) {
+
+        return data.matches("\\d+(\\.\\d+)?");
+    }
+
+
+    public static void main(String[] args) {
         
         //Declaring variables
-        
-        //variables used for read the doc. "C:\Users\dav_g\Documents\NetBeansProjects\LAB_TEST_2025039\data.txt"
         
         // Declare a variable to store the document (file) name
         String doc_name;
         // Assign the file name "data.txt" to the variable
         doc_name="data.txt";
-        // Declare a Scanner object to read the file, initially set to null
-        Scanner doc_data = null;
-        // Declare a variable to store the data read from the file
-        String data;
+
+        FileManager fileManager = new FileManager();
         
         // variables used
         
@@ -35,10 +38,9 @@ public class App {
         double sum=0;
         // Declare a variable to store the average of the numbers
         double avg;
-        // Declare an array to store multiple values
-        double[] numbers;
         // Declare a variable to store the maximum value among the numbers
         double max;
+        
    
         // try was  used in case the program can not find the document
         
@@ -54,27 +56,33 @@ public class App {
                                    Choose 3 if you want to calculate the average weekly salary
                                    Choose 4 if you want to exit""");
                 // Inner loop to validate that the user enters a single-digit number (0-9)
+
                 do{
 
-                    System.out.println("You must enter an integer value.");
+                    System.out.println("Enter your choice:");
                     // Read the user's input as a string
                     choose = myKB.nextLine();
 
+
                 // Repeat if input is not a single digit (0-9)
                 }while (!choose.matches("[0-9]"));
-                // Initialize the Scanner object to read from the file specified in doc_name   
-                doc_data = new Scanner(new FileReader(doc_name));
-                // Loop through each line in the file
-                    while(doc_data.hasNext()){
-                        // Read one line of data from the file
-                        data = doc_data.nextLine();
-                        // Check if the data is a number (integer or decimal)
-                        // Regex [0-9]+ matches whole numbers; contains(".") checks for decimal numbers
-                        if (data.matches("[0-9]+")==true || !!data.contains(".")) {
-                                //this count is just to know the length of the array in case 2
-                                count_real=count_real+1; 
-                        }
+
+                List<String> fileData = fileManager.readFile(doc_name);
+                count_real=0;
+                count_error=0;
+
+                for(String data : fileData){
+
+                    if (isNumeric(data)){
+
+                        count_real++;
+
+                    } else {
+
+                        count_error++;
+
                     }
+                }
 
                 // Convert the valid input string into an integer
                 choice = Integer.parseInt(choose);
@@ -86,26 +94,19 @@ public class App {
                             //reset values
                             count_real=0;
                             count_error=0;
-                            // Initialize the Scanner object to read from the file specified in doc_name
-                            doc_data = new Scanner(new FileReader(doc_name));
-                            // Loop through each line in the file
-                            while(doc_data.hasNext()){
-                                // Read one line of data from the file
-                                data = doc_data.nextLine();
 
-                              // Check if the data is a number (integer or decimal)
-                              // Regex [0-9]+ matches whole numbers; contains(".") checks for decimal numbers
-                              if (data.matches("[0-9]+")==true || !!data.contains(".")) {
+                            for(String data : fileData){
 
-                                  count_real=count_real+1; // counting real numbers
+                                if (isNumeric(data)) {
 
-                              }else{
+                                    count_real++;
 
-                                  count_error=count_error+1; // counting errors (not number)
+                                } else {
 
-                              }
+                                    count_error++;
 
-                            } 
+                                }
+                            }
 
                         // Output the results
                         System.out.println("\nValid entries\n" + count_real + "\nInvalid entries \n" + count_error);
@@ -115,35 +116,30 @@ public class App {
                     case 2 -> {
                         //reset count value
                         count=0;
-                        // Initialize the numbers array to hold all valid numeric entries counted previously
-                        numbers = new double[count_real];
-                        // Re-open the file to read data again
-                        doc_data = new Scanner(new FileReader(doc_name));
-                        // Loop through each line in the file
-                        while(doc_data.hasNext()){
-                            // Read one line of data from the file
-                            data = doc_data.nextLine();
-                            // Check if the data is a valid number (integer or decimal)
-                            if (data.matches("[0-9]+")==true || !!data.contains(".")) {
-                                // converting string to a number if the statement is true
-                                num = Double.parseDouble(data); 
-                                // Increment the count of valid numbers read so far
-                                count=count+1;
-                                // Store the number in the array (adjust index for 0-based)
-                                numbers[count-1] = num;
+                        max = Double.MIN_VALUE;
+
+                        for(String data : fileData){
+
+                            if (isNumeric(data)) {
+
+                               num = Double.parseDouble(data);
+
+                                if(num > max) max = num;
+
+                                count++;
+
+                            } else {
+
+                                count_error++;
 
                             }
+                        }
 
+                        if(count == 0){
+                            System.out.println("No valid salaries found.");
+                            break;
                         }
-                        // Initialize max to the first number in the array
-                        max = numbers[0];
-                        // Loop through the array starting from the second element
-                        for (int i = 1; i < numbers.length; i++) {
-                            // Update max if current number is greater
-                            if (numbers[i] > max) {
-                                max = numbers[i];             
-                            }
-                        }
+
                         // Print out the highest salary found
                         System.out.println("Highest salary is \n" + max);
 
@@ -154,24 +150,21 @@ public class App {
                         sum=0;
                         avg=0;
                         count=0;
-                        // Re-open the file to read data again
-                        doc_data = new Scanner(new FileReader(doc_name));
-                        // Loop through each line in the file
-                            while(doc_data.hasNext()){
-                                // Read a line from the file
-                                data = doc_data.nextLine();
 
-                                // taking each value inside the doc and find if it is a number or not
-                              if (data.matches("[0-9]+")==true || !!data.contains(".")) {
-                                  // converting string to a number if the statement is true
-                                  num = Double.parseDouble(data); 
-                                  // Add the number to the running total sum
-                                  sum=(sum+num); 
-                                  // Increment the count of valid numbers read so far
-                                  count=count+1;
-                              }
+                        for(String data : fileData){
+
+                            if (isNumeric(data)) {
+
+                                num = Double.parseDouble(data);
+
+                                sum += num;
+
+                                count++;
+
                             }
-                        if (count_real > 0) {
+                        }
+
+                        if (count > 0) {
                              // Calculate the average by dividing the sum by the number of valid entries
                             avg = sum / count;
                             // Print the average salary
