@@ -1,80 +1,7 @@
 import java.util.Scanner;
-import java.util.ArrayList;
 import java.util.List;
 
 public class App {
-
-    public static List<Double> getValidNumbers(List<String> fileLines){
-
-        List<Double> validNumbers = new ArrayList<>();
-
-        for(String line : fileLines){
-
-            if(isNumeric(line)){
-
-                validNumbers.add(Double.parseDouble(line));
-            }
-        }
-
-        return validNumbers;
-    }
-
-    public static boolean isNumeric(String line) {
-
-        return line.matches("\\d+(\\.\\d+)?");
-    }
-
-    public static int[] countEntries(List<String> fileLines){
-
-    int validEntries = 0;
-    int invalidEntries = 0;
-
-    for(String line : fileLines){
-
-        if(isNumeric(line)){
-            validEntries++;
-        } else {
-            invalidEntries++;
-        }
-    }
-
-    return new int[]{validEntries, invalidEntries};
-}
-
-public static double findHighestSalary(List<Double> validNumbers){
-
-        if(validNumbers.isEmpty()){
-            return -1;
-        }
-
-        double max = validNumbers.get(0);
-
-        for(double number : validNumbers){
-
-            if(number > max){
-                max = number;
-            }
-        }
-
-        return max;
-    }
-
-public static double calculateAverageSalary(List<Double> validNumbers){
-
-        if(validNumbers.isEmpty()){
-            return -1;
-        }
-
-        double sum = 0;
-
-        for(double number : validNumbers){
-
-            sum += number;
-        }
-
-        return sum / validNumbers.size();
-    }
-
 
     public static void main(String[] args) {
         
@@ -84,6 +11,7 @@ public static double calculateAverageSalary(List<Double> validNumbers){
         String fileName="data.txt";
 
         FileManager fileManager = new FileManager();
+        SalaryAnalyzer salaryAnalyzer = new SalaryAnalyzer();
         
         // variables used
         
@@ -119,7 +47,7 @@ public static double calculateAverageSalary(List<Double> validNumbers){
 
                 List<String> fileLines = fileManager.readFile(fileName);
 
-                List<Double> validNumbers = getValidNumbers(fileLines);
+                List<Double> validNumbers = salaryAnalyzer.getValidNumbers(fileLines);
 
 
                 // Convert the valid input string into an integer
@@ -130,7 +58,7 @@ public static double calculateAverageSalary(List<Double> validNumbers){
                     // Case 1: Count valid and invalid entries in the file
                     case 1 -> {
                             //reset values
-                            int[] results = countEntries(fileLines);
+                            int[] results = salaryAnalyzer.countEntries(fileLines);
 
                             int validEntries = results[0];
                             int invalidEntries = results[1];
@@ -142,7 +70,7 @@ public static double calculateAverageSalary(List<Double> validNumbers){
                     // Case 2: find the highest salary in the file
                     case 2 -> {
 
-                            double maxSalary = findHighestSalary(validNumbers);
+                            double maxSalary = salaryAnalyzer.findHighestSalary(validNumbers);
 
                             if(maxSalary == -1){
 
@@ -158,7 +86,7 @@ public static double calculateAverageSalary(List<Double> validNumbers){
                     // Case 3: find the average weekly salary in the file
                     case 3 -> {
                        
-                            double averageSalary = calculateAverageSalary(validNumbers);
+                            double averageSalary = salaryAnalyzer.calculateAverageSalary(validNumbers);
 
                             if(averageSalary == -1){
 
