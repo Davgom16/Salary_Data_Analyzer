@@ -8,6 +8,23 @@ public class App {
         return data.matches("\\d+(\\.\\d+)?");
     }
 
+    public static int[] countEntries(List<String> fileData){
+
+    int validEntries = 0;
+    int invalidEntries = 0;
+
+    for(String data : fileData){
+
+        if(isNumeric(data)){
+            validEntries++;
+        } else {
+            invalidEntries++;
+        }
+    }
+
+    return new int[]{validEntries, invalidEntries};
+}
+
 
     public static void main(String[] args) {
         
@@ -23,30 +40,15 @@ public class App {
         // variables used
         
         // Declare a variable to store a numeric value
-        double num;
-        // Declare a string variable to store user's choice or input
         String choose;
         // Declare an integer variable to represent a numerical choice or selection
         int choice;
-        // Initialize a counter to track total number of inputs or iterations
-        int count=0;
-        // Initialize a counter to track the number of valid entries
-        int count_real=0;
-        // Initialize a counter to track the number of errors or invalid entries
-        int count_error=0;
-        // Initialize a variable to hold the sum of values
-        double sum=0;
-        // Declare a variable to store the average of the numbers
-        double avg;
-        // Declare a variable to store the maximum value among the numbers
-        double max;
+
         
    
         // try was  used in case the program can not find the document
         
-        try {
-            // Create a Scanner object to read input from the keyboard
-           Scanner myKB = new Scanner (System.in);
+        try (Scanner myKB = new Scanner (System.in)) {
             // Outer loop that likely continues until the user chooses to exit
             do {
                 // Display the menu of options to the user
@@ -65,24 +67,10 @@ public class App {
 
 
                 // Repeat if input is not a single digit (0-9)
-                }while (!choose.matches("[0-9]"));
+                }while (!choose.matches("\\d+"));
 
                 List<String> fileData = fileManager.readFile(doc_name);
-                count_real=0;
-                count_error=0;
 
-                for(String data : fileData){
-
-                    if (isNumeric(data)){
-
-                        count_real++;
-
-                    } else {
-
-                        count_error++;
-
-                    }
-                }
 
                 // Convert the valid input string into an integer
                 choice = Integer.parseInt(choose);
@@ -92,45 +80,30 @@ public class App {
                     // Case 1: Count valid and invalid entries in the file
                     case 1 -> {
                             //reset values
-                            count_real=0;
-                            count_error=0;
-
-                            for(String data : fileData){
-
-                                if (isNumeric(data)) {
-
-                                    count_real++;
-
-                                } else {
-
-                                    count_error++;
-
-                                }
-                            }
+                            int[] results = countEntries(fileData);
+                            
+                            int validEntries = results[0];
+                            int invalidEntries = results[1];
 
                         // Output the results
-                        System.out.println("\nValid entries\n" + count_real + "\nInvalid entries \n" + count_error);
+                        System.out.println("\nValid entries\n" + validEntries + "\nInvalid entries \n" + invalidEntries);
 
                     }
                     // Case 2: find the highest salary in the file
                     case 2 -> {
                         //reset count value
-                        count=0;
-                        max = Double.MIN_VALUE;
+                        int count=0;
+                        double max = Double.MIN_VALUE;
 
                         for(String data : fileData){
 
                             if (isNumeric(data)) {
 
-                               num = Double.parseDouble(data);
+                               double num = Double.parseDouble(data);
 
                                 if(num > max) max = num;
 
                                 count++;
-
-                            } else {
-
-                                count_error++;
 
                             }
                         }
@@ -147,15 +120,15 @@ public class App {
                     // Case 3: find the average weekly salary in the file
                     case 3 -> {
                         //reset values
-                        sum=0;
-                        avg=0;
-                        count=0;
+                        double sum=0;
+                        double avg=0;
+                        int count=0;
 
                         for(String data : fileData){
 
                             if (isNumeric(data)) {
 
-                                num = Double.parseDouble(data);
+                                double num = Double.parseDouble(data);
 
                                 sum += num;
 
