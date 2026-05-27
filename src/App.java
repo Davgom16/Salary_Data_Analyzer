@@ -1,21 +1,37 @@
 import java.util.Scanner;
+import java.util.ArrayList;
 import java.util.List;
 
 public class App {
 
-    public static boolean isNumeric(String data) {
+    public static List<Double> getValidNumbers(List<String> fileLines){
 
-        return data.matches("\\d+(\\.\\d+)?");
+        List<Double> validNumbers = new ArrayList<>();
+
+        for(String line : fileLines){
+
+            if(isNumeric(line)){
+
+                validNumbers.add(Double.parseDouble(line));
+            }
+        }
+
+        return validNumbers;
     }
 
-    public static int[] countEntries(List<String> fileData){
+    public static boolean isNumeric(String line) {
+
+        return line.matches("\\d+(\\.\\d+)?");
+    }
+
+    public static int[] countEntries(List<String> fileLines){
 
     int validEntries = 0;
     int invalidEntries = 0;
 
-    for(String data : fileData){
+    for(String line : fileLines){
 
-        if(isNumeric(data)){
+        if(isNumeric(line)){
             validEntries++;
         } else {
             invalidEntries++;
@@ -25,54 +41,39 @@ public class App {
     return new int[]{validEntries, invalidEntries};
 }
 
-public static double findHighestSalary(List<String> fileData){
+public static double findHighestSalary(List<Double> validNumbers){
 
-    double max = Double.MIN_VALUE;
-    int count = 0;
+        if(validNumbers.isEmpty()){
+            return -1;
+        }
 
-    for(String data : fileData){
+        double max = validNumbers.get(0);
 
-        if(isNumeric(data)){
+        for(double number : validNumbers){
 
-            double num = Double.parseDouble(data);
-
-            if(num > max){
-                max = num;
+            if(number > max){
+                max = number;
             }
-
-            count++;
         }
+
+        return max;
     }
 
-    if(count == 0){
-        return -1;
-    }
+public static double calculateAverageSalary(List<Double> validNumbers){
 
-    return max;
-}
-
-public static double calculateAverageSalary(List<String> fileData){
-
-    double sum = 0;
-    int count = 0;
-
-    for(String data : fileData){
-
-        if(isNumeric(data)){
-
-            double num = Double.parseDouble(data);
-
-            sum += num;
-            count++;
+        if(validNumbers.isEmpty()){
+            return -1;
         }
-    }
 
-    if(count == 0){
-        return -1;
-    }
+        double sum = 0;
 
-    return sum / count;
-}
+        for(double number : validNumbers){
+
+            sum += number;
+        }
+
+        return sum / validNumbers.size();
+    }
 
 
     public static void main(String[] args) {
@@ -80,16 +81,14 @@ public static double calculateAverageSalary(List<String> fileData){
         //Declaring variables
         
         // Declare a variable to store the document (file) name
-        String doc_name;
-        // Assign the file name "data.txt" to the variable
-        doc_name="data.txt";
+        String fileName="data.txt";
 
         FileManager fileManager = new FileManager();
         
         // variables used
         
         // Declare a variable to store a numeric value
-        String choose;
+        String userInput;
         // Declare an integer variable to represent a numerical choice or selection
         int choice;
 
@@ -97,7 +96,7 @@ public static double calculateAverageSalary(List<String> fileData){
    
         // try was  used in case the program can not find the document
         
-        try (Scanner myKB = new Scanner (System.in)) {
+        try (Scanner scanner = new Scanner (System.in)) {
             // Outer loop that likely continues until the user chooses to exit
             do {
                 // Display the menu of options to the user
@@ -112,24 +111,26 @@ public static double calculateAverageSalary(List<String> fileData){
 
                     System.out.println("Enter your choice:");
                     // Read the user's input as a string
-                    choose = myKB.nextLine();
+                    userInput = scanner.nextLine();
 
 
                 // Repeat if input is not a single digit (0-9)
-                }while (!choose.matches("\\d+"));
+                }while (!userInput.matches("\\d+"));
 
-                List<String> fileData = fileManager.readFile(doc_name);
+                List<String> fileLines = fileManager.readFile(fileName);
+
+                List<Double> validNumbers = getValidNumbers(fileLines);
 
 
                 // Convert the valid input string into an integer
-                choice = Integer.parseInt(choose);
+                choice = Integer.parseInt(userInput);
                 
                 // Switch statement to handle different menu options based on user's choice
                 switch (choice) {
                     // Case 1: Count valid and invalid entries in the file
                     case 1 -> {
                             //reset values
-                            int[] results = countEntries(fileData);
+                            int[] results = countEntries(fileLines);
 
                             int validEntries = results[0];
                             int invalidEntries = results[1];
@@ -141,7 +142,7 @@ public static double calculateAverageSalary(List<String> fileData){
                     // Case 2: find the highest salary in the file
                     case 2 -> {
 
-                            double maxSalary = findHighestSalary(fileData);
+                            double maxSalary = findHighestSalary(validNumbers);
 
                             if(maxSalary == -1){
 
@@ -157,7 +158,7 @@ public static double calculateAverageSalary(List<String> fileData){
                     // Case 3: find the average weekly salary in the file
                     case 3 -> {
                        
-                            double averageSalary = calculateAverageSalary(fileData);
+                            double averageSalary = calculateAverageSalary(validNumbers);
 
                             if(averageSalary == -1){
 
@@ -189,7 +190,7 @@ public static double calculateAverageSalary(List<String> fileData){
           // Catch any exceptions, such as file not found or input/output errors
 
            // Print the error message and specify the file that couldn't be accessed
-          System.out.println(e.getMessage() + "Error - unable to find file " + doc_name);
+          System.out.println(e.getMessage() + "Error - unable to find file " + fileName);
 
     }
     
