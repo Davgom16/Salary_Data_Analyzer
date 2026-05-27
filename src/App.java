@@ -51,6 +51,28 @@ public static double findHighestSalary(List<String> fileData){
     return max;
 }
 
+public static double calculateAverageSalary(List<String> fileData){
+
+    double sum = 0;
+    int count = 0;
+
+    for(String data : fileData){
+
+        if(isNumeric(data)){
+
+            double num = Double.parseDouble(data);
+
+            sum += num;
+            count++;
+        }
+    }
+
+    if(count == 0){
+        return -1;
+    }
+
+    return sum / count;
+}
 
 
     public static void main(String[] args) {
@@ -134,33 +156,18 @@ public static double findHighestSalary(List<String> fileData){
                     }
                     // Case 3: find the average weekly salary in the file
                     case 3 -> {
-                        //reset values
-                        double sum=0;
-                        double avg=0;
-                        int count=0;
+                       
+                            double averageSalary = calculateAverageSalary(fileData);
 
-                        for(String data : fileData){
+                            if(averageSalary == -1){
 
-                            if (isNumeric(data)) {
+                                System.out.println("No valid data to calculate average.");
 
-                                double num = Double.parseDouble(data);
+                            } else {
 
-                                sum += num;
-
-                                count++;
-
+                                System.out.println("Average weekly salary is \n" + averageSalary);
                             }
-                        }
-
-                        if (count > 0) {
-                             // Calculate the average by dividing the sum by the number of valid entries
-                            avg = sum / count;
-                            // Print the average salary
-                            System.out.println("Average weekly salary is \n" + avg);
-                        } else {
-                            // Handle case where there are no valid entries to avoid division by zero
-                            System.out.println("No valid data to calculate average.");
-                        }
+                            
                     }
                     case 4 -> {
                         // Set choice to 4 to ensure the loop exits
