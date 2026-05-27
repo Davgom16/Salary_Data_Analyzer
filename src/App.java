@@ -25,6 +25,33 @@ public class App {
     return new int[]{validEntries, invalidEntries};
 }
 
+public static double findHighestSalary(List<String> fileData){
+
+    double max = Double.MIN_VALUE;
+    int count = 0;
+
+    for(String data : fileData){
+
+        if(isNumeric(data)){
+
+            double num = Double.parseDouble(data);
+
+            if(num > max){
+                max = num;
+            }
+
+            count++;
+        }
+    }
+
+    if(count == 0){
+        return -1;
+    }
+
+    return max;
+}
+
+
 
     public static void main(String[] args) {
         
@@ -81,7 +108,7 @@ public class App {
                     case 1 -> {
                             //reset values
                             int[] results = countEntries(fileData);
-                            
+
                             int validEntries = results[0];
                             int invalidEntries = results[1];
 
@@ -91,30 +118,18 @@ public class App {
                     }
                     // Case 2: find the highest salary in the file
                     case 2 -> {
-                        //reset count value
-                        int count=0;
-                        double max = Double.MIN_VALUE;
 
-                        for(String data : fileData){
+                            double maxSalary = findHighestSalary(fileData);
 
-                            if (isNumeric(data)) {
+                            if(maxSalary == -1){
 
-                               double num = Double.parseDouble(data);
+                                System.out.println("No valid salaries found.");
 
-                                if(num > max) max = num;
+                            } else {
 
-                                count++;
-
+                                System.out.println("Highest salary is \n" + maxSalary);
                             }
-                        }
 
-                        if(count == 0){
-                            System.out.println("No valid salaries found.");
-                            break;
-                        }
-
-                        // Print out the highest salary found
-                        System.out.println("Highest salary is \n" + max);
 
                     }
                     // Case 3: find the average weekly salary in the file
