@@ -1,18 +1,21 @@
-## Getting Started
+# Salary Data Analyzer
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+## 📊 Description
+Java + Maven project that analyzes salary data from a file, identifying valid/invalid entries and calculating statistics such as highest and average salary.
 
-## Folder Structure
+## 🚀 Features
+- Reads salary data from file
+- Validates numeric entries
+- Counts valid and invalid values
+- Finds highest salary
+- Calculates average salary
+- Unit testing with JUnit 5
 
-The workspace contains two folders by default, where:
+## 🧪 Technologies
+- Java 17
+- Maven
+- JUnit 5
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
-
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
-
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+## 📁 Project Structure
+src/main/java → application code  
+src/test/java → unit tests  
